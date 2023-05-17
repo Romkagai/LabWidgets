@@ -11,6 +11,7 @@ protected:
 public:
     Figura(int X, int Y, int Halflen): x(X), y(Y), halflen(Halflen) {}
     void move(float Alpha, QPainter * Painter);
+    virtual ~Figura() = default;
 };
 
 class MyLine: public Figura {
