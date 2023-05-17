@@ -6,6 +6,7 @@ Widget::Widget(QWidget * parent): QWidget(parent) {
   //codec = QTextCodec::codecForName("Windows-1251");     // Использование кодировки не требуется
   setWindowTitle("Возведение в квадрат");               // Устанавливаем имя окна
 
+try{
   frame = new QFrame(this);                             // Создали рамку с помощью new (добавили тень и панельную рамку вокруг)
   frame -> setFrameShadow(QFrame::Raised);              // Но наш класс - наследник QWidget
   frame -> setFrameShape(QFrame::Panel);                // QT сам вызовет необходимый деструктор, утечек памяти не будет
@@ -18,19 +19,25 @@ Widget::Widget(QWidget * parent): QWidget(parent) {
   nextButton = new QPushButton(("Следующее"), this);    //                      3) Кнопка с текстом "Следующее"
   exitButton = new QPushButton(("Выход"), this);        //                      4) Кнопка с текстом "Выход"
 
+    // Пример: Ловим bad_alloc
+    //  const size_t size = 30000000000000000ul;
+    //  char* ptr = NULL;
+    //  ptr = new char[size];
+
+} catch (std::bad_alloc&) { qDebug() << "Memory error"; exit(0); }
+
   QVBoxLayout * vLayout1 = new QVBoxLayout(frame);      // Создали вертикальный контейнер с рамкой, объявленной ранее (первая колонка объектов)
-  vLayout1 -> addWidget(inputLabel);                    // Добали два поля текста и два поля с вводом
+  QVBoxLayout * vLayout2 = new QVBoxLayout();           // Аналогично создали вертикальный контейнер
+  QHBoxLayout * hLayout = new QHBoxLayout(this);        // Создали горизонтальный контейнер
+
+  vLayout1 -> addWidget(inputLabel);                    // Добавили два поля текста и два поля с вводом
   vLayout1 -> addWidget(inputEdit);
   vLayout1 -> addWidget(outputLabel);
   vLayout1 -> addWidget(outputEdit);
   vLayout1 -> addStretch();                             // Добавили контейнеру свойство растяжения при растяжении окна
-
-  QVBoxLayout * vLayout2 = new QVBoxLayout();           // Аналогично создали вертикальный контейнер
   vLayout2 -> addWidget(nextButton);                    // Положили кнопки Следующее и Выход
   vLayout2 -> addWidget(exitButton);
   vLayout2 -> addStretch();
-
-  QHBoxLayout * hLayout = new QHBoxLayout(this);        // Создали горизонтальный контейнер
   hLayout -> addWidget(frame);                          // Добавили рамку и вертикальный контейнер 2
   hLayout -> addLayout(vLayout2);
 
